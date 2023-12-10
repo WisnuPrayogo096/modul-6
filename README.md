@@ -2,7 +2,7 @@
 
 ## Overview
 
-Project ini adalah untuk tugas pratikum mata kuliah Machine Learning Fakultas Teknik Informatika UMM
+Project ini untuk tugas pratikum mata kuliah Machine Learning Fakultas Teknik Informatika UMM
 **_Link Dataset yang digunakan :_** [rps dataset](https://drive.google.com/drive/folders/1kgyN9Ah_w6MvxsRxANh3TfB9S-bCVZMv).
 
 Preprocessing yang digunakan : Konversi mode warna, Pengubahan ukuran, Konversi ke array, Ekspansi dimensi, Normalisasi

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Rock Paper Scissors Prediction</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      h1,
+      h2,
+      form,
+      img,
+      div {
+        margin: 10px;
+      }
+
+      form {
+        text-align: center;
+      }
+    </style>
+    <script>
+      function handleForm(event) {
+        event.preventDefault();
+        var formData = new FormData(event.target);
+
+        // Display loading animation
+        var loading = document.getElementById("loading");
+        loading.style.display = "block";
+
+        // Display the uploaded image
+        var fileInput = document.getElementById("fileInput");
+        var previewImage = document.getElementById("previewImage");
+        var file = fileInput.files[0];
+        var reader = new FileReader();
+
+        reader.onloadend = function () {
+          previewImage.src = reader.result;
+        };
+
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+
+        // Make the prediction request
+        fetch("/predict", { method: "POST", body: formData })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("response").innerText =
+              data.message + data.prediction_time;
+
+            // Display the predicted image
+            var predictedImage = document.getElementById("predictedImage");
+            predictedImage.src = "/static/" + data.predicted_image;
+
+            // Hide loading animation
+            loading.style.display = "none";
+          })
+          .catch((error) => {
+            console.error("Error during prediction:", error);
+            // Hide loading animation in case of an error
+            loading.style.display = "none";
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Upload an image for prediction</h1>
+    <form onsubmit="handleForm(event)">
+      <input id="fileInput" type="file" name="file" accept="image/*" />
+      <select name="model">
+        <option value="cnn">CNN</option>
+        <option value="resnet">ResNet50</option>
+        <option value="mobilenetv2">MobileNetV2</option>
+      </select>
+      <input type="submit" value="Predict" />
+      <!-- Loading animation -->
+      <div id="loading" style="display: none">Loading...</div>
+    </form>
+
+    <!-- Display the uploaded and predicted images side by side -->
+    <div
+      style="
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+      "
+    >
+      <div style="text-align: center">
+        <h2>Uploaded Image</h2>
+        <img
+          id="previewImage"
+          alt="Uploaded Image"
+          style="max-width: 300px; max-height: 300px; margin-bottom: 10px"
+        />
+      </div>
+
+      <div style="text-align: center">
+        <h2>Predicted Image</h2>
+        <img
+          id="predictedImage"
+          alt="Predicted Image"
+          style="max-width: 150px; max-height: 150px; margin-bottom: 10px"
+        />
+      </div>
+    </div>
+
+    <h2>Results</h2>
+    <div>
+      <pre id="response"></pre>
+    </div>
+  </body>
+</html>

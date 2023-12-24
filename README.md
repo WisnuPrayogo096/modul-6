@@ -5,12 +5,9 @@
 Project ini adalah untuk tugas pratikum mata kuliah Machine Learning Fakultas Teknik Informatika UMM
 **_Link Dataset yang digunakan :_** [rps dataset](https://drive.google.com/drive/folders/1kgyN9Ah_w6MvxsRxANh3TfB9S-bCVZMv).
 
-Preprocessing yang digunakan : Konversi mode warna, Pengubahan ukuran, Konversi ke array, Ekspansi dimensi, Normalisasi
+Preprocessing yang digunakan : Konversi mode warna BGR ke RGB dan Grayscale, Pengubahan ukuran, Konversi ke array, Ekspansi dimensi, Normalisasi
 
-Model yang digunakan : Deep Learning Method Convolutional Neural Network dengan arsitektur seperti gambar di bawah ini
-![image](assets/cnn.png)
-
-Selain itu, menambahkan dengan method pre-train yaitu MobileNetV2 dan ResNet50
+Model yang digunakan : Pre Trained Method yaitu MobileNetV2 dan ResNet50 dengan arsitektur seperti gambar di bawah ini
 
 MobileNetV2
 
@@ -20,74 +17,50 @@ ResNet50
 
 ![image](assets/resnet.png)
 
-**Akurasi** yang didapatkan dengan menggunakan model CNN adalah : **97.22%**
-
-Sedangkan dengan tambahan method pre-trained yaitu model MobileNetV2 dan Resnet50 adalah : **92.85%** dan **90.47%**
+**Akurasi** yang didapatkan dengan menggunakan model MobileNetV2 dan Resnet50 adalah : **100%** dan **94%**
 
 ## Overview Dataset
 
 **_Link Dataset yang digunakan :_** [rps dataset](https://drive.google.com/drive/folders/1kgyN9Ah_w6MvxsRxANh3TfB9S-bCVZMv).
 Gambar yang digunakan adalah Rock, Paper dan Scissors dengan total gambar 2.520 gambar. Terdiri dari 840 gambar jenis Rock, 840 gambar jenis Paper dan 840 gambar jenis Scissors
 
-Splitting Dataset : Training = 70%, Validation = 20%, Testing = 10%.
+Splitting Dataset : Training = 80%, Validation = 20%
 
 ## Preprocessing dan Modelling
 
-- **Preprocessing Model** : resize(150,150), rescale=1./255, rotation_range=40, width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, zoom_range=0.2, horizontal_flip=True, fill_mode='nearest'
-- Modelling Model CNN :
+- **Preprocessing Model** : resize(100,100), rescale=1./255, rotation_range=40, width_shift_range=0.2, height_shift_range=0.2, shear_range=0.2, zoom_range=0.2, horizontal_flip=True, fill_mode='nearest'
 
-  Summary Model CNN :
-
-  ![image](assets/summary_cnn.png)
-
-  Graph Loss dan Accuracy Model CNN :
-
-  ![image](assets/graph_acc_cnn.png)
-  ![image](assets/graph_loss_cnn.png)
-
-  Evaluation Matrix Model CNN :
-
-  ![image](assets/eva_cnn.png)
-
-  - Modelling Model MobileNetV2 :
+- Modelling Model MobileNetV2 :
 
   Summary Model MobileNetV2 :
 
   ![image](assets/summary_mobilenetv2.png)
 
-  Graph Loss dan Accuracy MobileNetV2 :
+  Graph Accuracy dan Loss MobileNetV2 :
 
-  ![image](assets/graph_acc_net.png)
-  ![image](assets/graph_loss_net.png)
+  ![image](assets/baru/plot_acc_netv2.png)
+  ![image](assets/baru/plot_loss_netv2.png)
 
-  Evaluation Matrix Model MobileNetV2 :
+  Classification Report Model MobileNetV2 :
 
-  ![image](assets/eva_net.png)
+  ![image](assets/baru/report_netv2.png)
 
-  - Modelling Model ResNet50 :
+- Modelling Model ResNet50 :
 
   Summary Model ResNet50 :
 
   ![image](assets/summary_resnet50.png)
 
-  Graph Loss dan Accuracy ResNet50 :
+  Graph Accuracy dan Loss ResNet50 :
 
-  ![image](assets/graph_acc_resnet.png)
-  ![image](assets/graph_loss_resnet.png)
+  ![image](assets/baru/plot_acc_resnet.png)
+  ![image](assets/baru/plot_loss_resnet.png)
 
-  Evaluation Matrix Model ResNet50 :
+  Classification Report Model ResNet50 :
 
-  ![image](assets/eva_resnet.png)
+  ![image](assets/baru/report_resnet.png)
 
   ## Predict Data
-
-- Predict Data dengan Model CNN :
-
-1. ![image](assets/predict_cnn.png)
-
-2. ![image](assets/predict_cnn_2.png)
-
-3. ![image](assets/predict_cnn_3.png)
 
 - Predict Data dengan Model MobileNetV2 :
 
@@ -107,6 +80,8 @@ Splitting Dataset : Training = 70%, Validation = 20%, Testing = 10%.
 
 ## Local Development
 
-![image](assets/page_1.png)
+![image](assets/baru/UI_1.png)
 
-![image](assets/page_2.png)
+![image](assets/baru/UI_2.png)
+
+![image](assets/baru/UI_3.png)

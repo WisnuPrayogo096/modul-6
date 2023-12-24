@@ -11,9 +11,11 @@ import time
 app = Flask(__name__)
 
 # Load the pre-trained models
-model_cnn = load_model('models/model_cnn.h5')
-model_mobilenetv2 = load_model('models/model_netv2.h5')
-model_resnet = load_model('models/model_resnet50.h5')
+model_mobilenetv2 = load_model('models/mobilenetv2_model.h5')
+model_resnet = load_model('models/resnet50_model.h5')
+
+# Define target size for preprocessing
+target_size = (100, 100)
 
 def preprocess_image(image, target_size):
     if image.mode != "RGB":
@@ -31,12 +33,13 @@ def predict_image(model, processed_image):
     prediction_time = end_time - start_time  # Calculate prediction time
 
     predicted_class = np.argmax(prediction)
-    class_labels = ['rock', 'paper', 'scissors']
+    class_labels = ["paper", "rock", "scissors"]
 
     # Combine all four types of response
     response = {
-        'message': f"Predicted label is : {class_labels[predicted_class]} | Accuracy : {prediction[0][predicted_class] * 100:.2f}%",
-        'prediction_time': f" | Prediction Time : {prediction_time:.2f} seconds",
+        'message': f"Predicted Label : {class_labels[predicted_class]}",
+        'accuracy': f"Accuracy : {prediction[0][predicted_class] * 100:.2f}%",
+        'prediction_time': f"Prediction Time : {prediction_time:.2f} seconds",
         'predicted_class': class_labels[predicted_class]
     }
 
@@ -51,13 +54,11 @@ def predict():
     if request.method == "POST":
         file = request.files["file"]
         image = Image.open(io.BytesIO(file.read()))
-        processed_image = preprocess_image(image, target_size=(150, 150))
+        processed_image = preprocess_image(image, target_size)
 
         # Choose the model based on the user's selection
         model_name = request.form.get("model")
-        if model_name == "cnn":
-            response = predict_image(model_cnn, processed_image)
-        elif model_name == "resnet":
+        if model_name == "resnet":
             response = predict_image(model_resnet, processed_image)
         elif model_name == "mobilenetv2":
             response = predict_image(model_mobilenetv2, processed_image)

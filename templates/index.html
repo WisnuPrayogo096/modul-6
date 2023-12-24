@@ -11,20 +11,172 @@
         justify-content: center;
         height: 100vh;
         margin: 0;
+        font-family: "Open Sans", sans-serif;
+        background-image: url("https://wallpapercave.com/download/rock-paper-scissors-wallpapers-wp8122053");
+        background-size: cover;
+        background-position: center;
+      }
+      h1,
+      h2,
+      p,
+      input,
+      select,
+      button {
+        font-family: "Open Sans", sans-serif;
       }
 
-      h1,
+      h1 {
+        margin: 10px;
+        color: #333;
+        text-align: center;
+        font-size: 24px;
+        outline: 2px solid #ddd; /* Add your desired outline color */
+        padding: 20px 40px 20px 40px;
+        background-color: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Adjust the shadow as needed */
+        border-radius: 10px; /* Adjust the border-radius value to control the roundness of corners */
+      }
+
       h2,
       form,
       img,
       div {
         margin: 10px;
+        color: #333;
       }
 
       form {
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #fileInput,
+      select,
+      input[type="submit"],
+      button[type="reset"] {
+        margin: 10px;
+        padding: 8px;
+        box-sizing: border-box;
+        width: 80%;
+      }
+
+      #fileInput {
+        border: 2px solid #ddd;
+        border-radius: 4px;
+      }
+
+      input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+
+      button[type="reset"] {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button[type="reset"]:hover {
+        background-color: #d32f2f;
+      }
+
+      #loading {
+        display: none;
+        font-weight: bold;
+        color: #4caf50;
+      }
+
+      #images-container {
+        display: flex;
+        justify-content: center;
+        width: 80%;
+        margin: 0 auto;
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.9
+        ); /* Add your desired background color with opacity */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Adjust the shadow as needed */
+        padding: 20px;
+        box-sizing: border-box;
+        border-radius: 10px;
+      }
+
+      .form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-right: 20px;
+      }
+
+      .image-section {
+        text-align: center;
+      }
+
+      .image-section img {
+        max-width: 300px;
+        max-height: 300px;
+        width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        padding: 5px;
+      }
+
+      .rounded-popup {
+        border-radius: 10px !important;
+      }
+
+      /* loading */
+
+      #loading {
+        display: none;
+        font-weight: bold;
+        color: #4caf50;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      .loading-animation {
+        position: relative;
+      }
+
+      .loading-animation::after {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to right, transparent, #4caf50);
+        animation: loading 1.5s infinite;
+      }
+
+      @keyframes loading {
+        to {
+          left: 100%;
+        }
       }
     </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
       function handleForm(event) {
         event.preventDefault();
@@ -36,6 +188,9 @@
 
         // Display the uploaded image
         var fileInput = document.getElementById("fileInput");
+        var uploadedImageSection = document.getElementById(
+          "uploadedImageSection"
+        );
         var previewImage = document.getElementById("previewImage");
         var file = fileInput.files[0];
         var reader = new FileReader();
@@ -46,74 +201,97 @@
 
         if (file) {
           reader.readAsDataURL(file);
+          uploadedImageSection.style.display = "block"; // Menampilkan bagian Uploaded Image
         }
 
         // Make the prediction request
         fetch("/predict", { method: "POST", body: formData })
           .then((response) => response.json())
           .then((data) => {
-            document.getElementById("response").innerText =
-              data.message + data.prediction_time;
-
-            // Display the predicted image
-            var predictedImage = document.getElementById("predictedImage");
-            predictedImage.src = "/static/" + data.predicted_image;
-
             // Hide loading animation
             loading.style.display = "none";
+
+            // Show SweetAlert popup with prediction results
+            Swal.fire({
+              title: "Prediction Result",
+              html: `<img src="/static/${data.predicted_image}" style="max-width: 50%; height: auto;" alt="Predicted Image"><br>${data.message}<br>${data.accuracy}<br>${data.prediction_time}`,
+              icon: "info",
+              confirmButtonText: "OK",
+              customClass: {
+                popup: "rounded-popup",
+              },
+            });
           })
           .catch((error) => {
             console.error("Error during prediction:", error);
             // Hide loading animation in case of an error
             loading.style.display = "none";
+            // Show SweetAlert popup with error message
+            Swal.fire({
+              title: "Error",
+              text: "An error occurred during prediction. Please try again.",
+              icon: "error",
+              confirmButtonText: "OK",
+              customClass: {
+                popup: "rounded-popup",
+              },
+            });
           });
+      }
+
+      function resetForm() {
+        // Clear the file input and preview
+        var fileInput = document.getElementById("fileInput");
+        var previewImage = document.getElementById("previewImage");
+        fileInput.value = null;
+        previewImage.src = "";
+
+        // Clear the response area
+        var responseArea = document.getElementById("response");
+        responseArea.innerText = "";
+
+        // Hide the Uploaded Image section on form reset
+        var uploadedImageSection = document.getElementById(
+          "uploadedImageSection"
+        );
+        uploadedImageSection.style.display = "none";
       }
     </script>
   </head>
   <body>
-    <h1>Upload an image for prediction</h1>
-    <form onsubmit="handleForm(event)">
-      <input id="fileInput" type="file" name="file" accept="image/*" />
-      <select name="model">
-        <option value="cnn">CNN</option>
-        <option value="resnet">ResNet50</option>
-        <option value="mobilenetv2">MobileNetV2</option>
-      </select>
-      <input type="submit" value="Predict" />
-      <!-- Loading animation -->
-      <div id="loading" style="display: none">Loading...</div>
-    </form>
+    <h1>Rock Paper Scissors Prediction</h1>
+    <div id="images-container">
+      <form onsubmit="handleForm(event)">
+        <!-- Choose File and Dropdown Model -->
+        <p style="font-size: small; font-weight: bold">Insert a photo</p>
+        <input id="fileInput" type="file" name="file" accept="image/*" />
+        <p style="font-size: small; font-weight: bold">
+          Choose a prediction model
+        </p>
+        <select name="model">
+          <option value="resnet">ResNet50</option>
+          <option value="mobilenetv2">MobileNetV2</option>
+        </select>
 
-    <!-- Display the uploaded and predicted images side by side -->
-    <div
-      style="
-        display: flex;
-        justify-content: space-around;
-        align-items: flex-start;
-      "
-    >
-      <div style="text-align: center">
+        <!-- Predict and Reset Buttons -->
+        <div style="display: flex; flex-direction: row">
+          <input type="submit" value="Predict" />
+          <button type="reset" onclick="resetForm()">Reset</button>
+        </div>
+
+        <!-- Loading animation -->
+        <div id="loading" class="loading-animation">Loading</div>
+      </form>
+
+      <!-- Display the uploaded image -->
+      <div
+        class="image-section"
+        id="uploadedImageSection"
+        style="display: none"
+      >
         <h2>Uploaded Image</h2>
-        <img
-          id="previewImage"
-          alt="Uploaded Image"
-          style="max-width: 300px; max-height: 300px; margin-bottom: 10px"
-        />
+        <img id="previewImage" alt="Uploaded Image" />
       </div>
-
-      <div style="text-align: center">
-        <h2>Predicted Image</h2>
-        <img
-          id="predictedImage"
-          alt="Predicted Image"
-          style="max-width: 150px; max-height: 150px; margin-bottom: 10px"
-        />
-      </div>
-    </div>
-
-    <h2>Results</h2>
-    <div>
-      <pre id="response"></pre>
     </div>
   </body>
 </html>
